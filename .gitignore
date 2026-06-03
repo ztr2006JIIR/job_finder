@@ -1,0 +1,10 @@
+.browsers/
+.deps/
+__pycache__/
+*.pyc
+streamlit.log
+streamlit.err.log
+streamlit.run.log
+debug.log
+data/live_51job_jobs.csv
+.streamlit/secrets.toml
