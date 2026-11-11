@@ -4,6 +4,7 @@ import gzip
 import os
 import sys
 import time
+import shutil
 from dataclasses import dataclass
 from html import unescape
 from html.parser import HTMLParser
@@ -176,6 +177,17 @@ def build_pc_search_url(keyword, city="全国", page=1):
     return f"https://we.51job.com/pc/search?{urlencode(params)}"
 
 
+def _browser_launch_options(headless=True):
+    options = {"headless": headless}
+    # Community Cloud installs Debian Chromium through packages.txt.
+    if sys.platform.startswith("linux"):
+        executable = shutil.which("chromium") or shutil.which("chromium-browser")
+        if executable:
+            options["executable_path"] = executable
+            options["args"] = ["--disable-dev-shm-usage"]
+    return options
+
+
 def crawl_51job_with_browser(keyword, city="全国", pages=1, page_size=20, timeout=30, headless=True):
     """用真实浏览器加载前程无忧页面，并从接口响应或页面 DOM 中提取岗位。"""
     try:
@@ -191,7 +203,7 @@ def crawl_51job_with_browser(keyword, city="全国", pages=1, page_size=20, time
     all_jobs = []
     pages_fetched = 0
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=headless)
+        browser = playwright.chromium.launch(**_browser_launch_options(headless))
         context = browser.new_context(
             locale="zh-CN",
             user_agent=(

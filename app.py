@@ -210,7 +210,7 @@ def main():
         with col_manual:
             manual_crawl = st.button("立即抓取")
         with col_auto:
-            auto_refresh = st.toggle("自动抓取", value=st.session_state.get("auto_refresh_51job", True))
+            auto_refresh = st.toggle("自动抓取", value=st.session_state.get("auto_refresh_51job", False))
         with col_clear:
             clear_live_data = st.button("清空实时数据")
 
